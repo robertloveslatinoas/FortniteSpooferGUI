@@ -14,25 +14,38 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.3.1
 
-      - name: Add .NET Framework Developer Pack
+      - name: Install .NET Framework Developer Pack
         run: choco install netfx-4.7.2-devpack -y
 
-      - name: Create Project
+      - name: Prepare Project
         run: |
-          mkdir SpooferProject
-          cd SpooferProject
-          dotnet new winforms -n FortniteSpooferGUI -f net472
+          mkdir FortniteSpooferGUI
           cd FortniteSpooferGUI
-          move ../../Program.cs .
-          move ../../MainForm.cs .
 
-      - name: Build
+          echo ^<?xml version="1.0" encoding="utf-8"?^> > FortniteSpooferGUI.csproj
+          echo ^<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"^> >> FortniteSpooferGUI.csproj
+          echo   ^<PropertyGroup^> >> FortniteSpooferGUI.csproj
+          echo     ^<OutputType^>WinExe^</OutputType^> >> FortniteSpooferGUI.csproj
+          echo     ^<TargetFrameworkVersion^>v4.7.2^</TargetFrameworkVersion^> >> FortniteSpooferGUI.csproj
+          echo     ^<RootNamespace^>FortniteSpooferGUI^</RootNamespace^> >> FortniteSpooferGUI.csproj
+          echo   ^</PropertyGroup^> >> FortniteSpooferGUI.csproj
+          echo   ^<ItemGroup^> >> FortniteSpooferGUI.csproj
+          echo     ^<Compile Include="Program.cs" /^> >> FortniteSpooferGUI.csproj
+          echo     ^<Compile Include="MainForm.cs" /^> >> FortniteSpooferGUI.csproj
+          echo   ^</ItemGroup^> >> FortniteSpooferGUI.csproj
+          echo   ^<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" /^> >> FortniteSpooferGUI.csproj
+          echo ^</Project^> >> FortniteSpooferGUI.csproj
+
+          move ../Program.cs .
+          move ../MainForm.cs .
+
+      - name: Build EXE
         run: |
-          cd SpooferProject/FortniteSpooferGUI
+          cd FortniteSpooferGUI
           msbuild FortniteSpooferGUI.csproj /p:Configuration=Release
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
-          name: FortniteSpooferGUI
-          path: SpooferProject/FortniteSpooferGUI/bin/Release/
+          name: FortniteSpooferEXE
+          path: FortniteSpooferGUI\bin\Release\
