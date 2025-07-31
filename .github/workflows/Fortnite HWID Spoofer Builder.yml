@@ -1,3 +1,4 @@
+
 name: Fortnite HWID Spoofer Builder
 
 on:
@@ -17,24 +18,25 @@ jobs:
       - name: Install .NET Framework Developer Pack
         run: choco install netfx-4.7.2-devpack -y
 
-      - name: Prepare Project
+      - name: Prepare Project Files
         run: |
           mkdir FortniteSpooferGUI
           cd FortniteSpooferGUI
 
-          echo ^<?xml version="1.0" encoding="utf-8"?^> > FortniteSpooferGUI.csproj
-          echo ^<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"^> >> FortniteSpooferGUI.csproj
-          echo   ^<PropertyGroup^> >> FortniteSpooferGUI.csproj
-          echo     ^<OutputType^>WinExe^</OutputType^> >> FortniteSpooferGUI.csproj
-          echo     ^<TargetFrameworkVersion^>v4.7.2^</TargetFrameworkVersion^> >> FortniteSpooferGUI.csproj
-          echo     ^<RootNamespace^>FortniteSpooferGUI^</RootNamespace^> >> FortniteSpooferGUI.csproj
-          echo   ^</PropertyGroup^> >> FortniteSpooferGUI.csproj
-          echo   ^<ItemGroup^> >> FortniteSpooferGUI.csproj
-          echo     ^<Compile Include="Program.cs" /^> >> FortniteSpooferGUI.csproj
-          echo     ^<Compile Include="MainForm.cs" /^> >> FortniteSpooferGUI.csproj
-          echo   ^</ItemGroup^> >> FortniteSpooferGUI.csproj
-          echo   ^<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" /^> >> FortniteSpooferGUI.csproj
-          echo ^</Project^> >> FortniteSpooferGUI.csproj
+          @"
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>FortniteSpooferGUI</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="MainForm.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
+"@ | Out-File -Encoding UTF8 FortniteSpooferGUI.csproj
 
           move ../Program.cs .
           move ../MainForm.cs .
